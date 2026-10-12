@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Surat Untuk Ain ✉️ | Daripada Syafizam</title>
+  <meta name="description" content="aku minta maaf pasal kemarin tu, jujur cakap aku tiada niat pun nak marah ke apa... Daripada Syafizam.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Open Graph (WhatsApp / Telegram preview) -->
+  <meta property="og:title" content="Ada surat untuk Ain ✉️">
+  <meta property="og:description" content="aku minta maaf pasal kemarin tu... Ikhlas daripada Syafizam.">
+  <meta property="og:type" content="website">
+
+  <!-- Favicons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💌</text></svg>" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Caveat:wght@400;500;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Sacramento&family=Dancing+Script:wght@400;700&family=Shadows+Into+Light&family=Indie+Flower&family=DM+Serif+Display:ital@0;1&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Particle Background Canvas (behind everything) -->
+  <canvas id="particles-canvas" style="position: fixed; inset: 0; pointer-events: none; z-index: 1;"></canvas>
+  <!-- Particle Foreground Canvas (above letter paper, very subtle) -->
+  <canvas id="particles-canvas-fg" style="position: fixed; inset: 0; pointer-events: none; z-index: 100;"></canvas>
+
+  <!-- Password Gate (Hidden by default) -->
+  <div id="password-gate" class="hidden">
+    <div class="gate-card">
+      <div class="gate-icon-box">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="M12 8v4" />
+          <path d="M12 16h.01" />
+        </svg>
+      </div>
+
+      <h2 class="gate-title">Letter Protected</h2>
+      <p class="gate-desc">Please enter the password to unlock this special message.</p>
+
+      <div id="gate-hint-container" class="hidden">
+        <span class="hint-label">Secret Clue:</span>
+        <p id="gate-hint-text"></p>
+      </div>
+
+      <div class="gate-input-wrapper">
+        <input id="gate-password-input" type="password" placeholder="Enter password..." autocomplete="off" />
+      </div>
+
+      <button id="btn-gate-verify">Open Letter</button>
+
+      <p id="gate-error" class="hidden">Invalid password. Try again.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- STATE: MAINTENANCE                                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div id="state-maintenance" class="state-screen hidden">
+    <div class="maintenance-content">
+      <div class="maint-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 22H22L12 2Z" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M12 9V14" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M12 18H12.01" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h1>System Update</h1>
+      <p>This digital letter is currently undergoing brief maintenance and will be available again soon. Thank you for
+        your patience.</p>
+      <div class="maint-footer">
+        <span>EST. 2025</span>
+        <span class="dot"></span>
+        <span>Premium Experience</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- STATE: LOADING                                         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div id="state-loading" class="state-screen">
+    <div class="loading-seal" aria-hidden="true">
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="28" r="26" fill="var(--gold)" opacity="0.15" />
+        <circle cx="28" cy="28" r="20" fill="var(--gold)" opacity="0.22" />
+        <circle cx="28" cy="28" r="13" fill="var(--gold)" opacity="0.15" />
+        <text x="28" y="33" text-anchor="middle" font-size="14" fill="var(--gold)" font-family="Georgia, serif"
+          opacity="0.9">✦</text>
+      </svg>
+    </div>
+    <p class="loading-label">Opening your letter…</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- STATE: ENVELOPE                                        -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div id="state-envelope" class="state-screen hidden">
+    <div class="env-bg" aria-hidden="true"></div>
+
+    <!-- Soft ambient blobs -->
+    <div class="env-blob env-blob-tl" aria-hidden="true"></div>
+    <div class="env-blob env-blob-br" aria-hidden="true"></div>
+
+    <div class="envelope-scene" id="envelope-scene">
+
+      <!-- Envelope card -->
+      <div class="envelope-wrapper" id="envelope-wrapper" role="button" aria-label="Open this letter" tabindex="0">
+
+        <!-- ── Envelope body ── -->
+        <div class="envelope-body">
+
+          <!-- ── Top flap (CSS border-trick triangle, height:0) ── -->
+          <div class="env-flap" id="env-flap" aria-hidden="true"></div>
+
+          <!-- Wax seal — sibling of flap, positioned from envelope-body -->
+          <div class="env-seal" id="env-seal">
+            <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="36" cy="36" r="34" fill="var(--seal-bg)" opacity="0.1" />
+              <circle cx="36" cy="36" r="29" fill="var(--seal-inner)" />
+              <circle cx="36" cy="36" r="27" fill="var(--seal-bg)" />
+              <circle cx="36" cy="36" r="25" fill="var(--seal-accent)" opacity="0.4" />
+              <ellipse cx="29" cy="27" rx="8" ry="5" fill="white" opacity="0.13" transform="rotate(-35 29 27)" />
+              <circle cx="36" cy="36" r="21" fill="none" stroke="white" stroke-width="0.9" opacity="0.25" />
+              <circle cx="36" cy="36" r="18" fill="none" stroke="white" stroke-width="0.4" opacity="0.15" />
+              <text x="36" y="43" text-anchor="middle" font-size="20" fill="var(--seal-text)" font-family="Georgia,serif"
+                opacity="0.92">✦</text>
+            </svg>
+          </div>
+
+          <!-- Recipient block on envelope face -->
+          <div class="env-recipient" aria-label="Recipient name">
+            <span class="env-to-label">for</span>
+            <span class="env-to-name" id="env-to-name">kamu</span>
+          </div>
+
+        </div><!-- /envelope-body -->
+
+      </div><!-- /envelope-wrapper -->
+
+      <!-- Tap hint, positioned below envelope -->
+      <p class="envelope-hint" id="envelope-hint">
+        <span aria-hidden="true">❦</span>&ensp;tap to open&ensp;<span aria-hidden="true">❦</span>
+      </p>
+
+    </div><!-- /envelope-scene -->
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- STATE: LETTER                                         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div id="state-letter" class="state-screen hidden">
+
+    <!-- Ambient paper background -->
+    <div class="paper-bg" aria-hidden="true"></div>
+
+    <!-- Scroll wrapper -->
+    <div class="letter-scroll">
+      <article class="letter-paper" id="letter-paper" role="main">
+        <div class="letter-tape"></div>
+        <div class="letter-paper-inner">
+
+          <!-- ── Header: ornament + date + title ── -->
+          <header class="letter-header">
+            <div class="ornament-top" aria-hidden="true">
+              <svg width="100%" height="100%" viewBox="0 0 200 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="0" y1="12" x2="85" y2="12" stroke="var(--accent)" stroke-width="0.7" stroke-dasharray="3 4"
+                  opacity="0.5" />
+                <path d="M100 6 L106 12 L100 18 L94 12 Z" fill="var(--gold)" />
+                <line x1="115" y1="12" x2="200" y2="12" stroke="var(--accent)" stroke-width="0.7" stroke-dasharray="3 4"
+                  opacity="0.5" />
+              </svg>
+            </div>
+            <h1 class="letter-title" id="letter-title"></h1>
+            <div class="letter-title-underline" aria-hidden="true">
+              <svg width="100%" height="100%" viewBox="0 0 400 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Gold Wave: Elegant S-Curve -->
+                <path d="M30 32 C 130 52, 270 12, 370 32" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round"
+                  opacity="0.8" />
+                <!-- Diamond center at the inflection point -->
+                <path d="M200 27 L205 32 L200 37 L195 32 Z" fill="var(--gold)" />
+                <!-- End points -->
+                <circle cx="30" cy="32" r="1.5" fill="var(--gold)" />
+                <circle cx="370" cy="32" r="1.5" fill="var(--gold)" />
+
+                <!-- Pink Wave: Competing S-Curve -->
+                <path d="M70 38 C 150 56, 250 20, 330 38" stroke="var(--accent)" stroke-width="1" stroke-linecap="round"
+                  opacity="0.6" />
+                <circle cx="70" cy="38" r="1" fill="var(--accent)" />
+                <circle cx="330" cy="38" r="1" fill="var(--accent)" />
+              </svg>
+            </div>
+            <time class="letter-date" id="letter-date"></time>
+          </header>
+
+          <!-- ── Salutation ── -->
+          <div class="letter-salutation">
+            <span class="letter-to" id="letter-to"></span>
+          </div>
+
+          <!-- ── Body (injected by script.js) ── -->
+          <div class="letter-body" id="letter-body" aria-label="Letter content"></div>
+
+          <!-- ── Footer: signature ── -->
+          <footer class="letter-footer">
+            <div class="letter-closing-wrap">
+              <span class="letter-from" id="letter-from"></span>
+            </div>
+
+            <div class="footer-divider" aria-hidden="true">
+              <svg width="100%" height="100%" viewBox="0 0 200 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="0" y1="8" x2="70" y2="8" stroke="var(--accent)" stroke-width="0.5" stroke-dasharray="2 4" />
+                <circle cx="100" cy="8" r="2.5" fill="none" stroke="var(--gold)" stroke-width="0.8" />
+                <line x1="130" y1="8" x2="200" y2="8" stroke="var(--accent)" stroke-width="0.5"
+                  stroke-dasharray="2 4" />
+              </svg>
+            </div>
+          </footer>
+        </div>
+      </article>
+
+      <!-- Action Buttons Container (revealed after typewriter ends) -->
+      <div id="save-letter-container"
+        style="display: none; opacity: 0; transition: opacity 1.2s ease-in-out; text-align: center; margin-top: 2.5rem; margin-bottom: 3rem; padding-bottom: 2rem;">
+        <div id="letter-end"></div>
+
+        <!-- Primary: Secret Memory Button -->
+        <button id="btn-secret-memory"
+          style="display: none; font-family: var(--font-ui); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em; padding: 14px 32px; background: var(--text-primary, #2c2420); color: #fff; border: none; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; align-items: center; gap: 10px; box-shadow: 0 6px 24px rgba(0,0,0,0.18); margin-bottom: 1rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+            </path>
+          </svg>
+          Buka Memori Rahasia
+        </button>
+        <br>
+        <!-- Secondary: Save Letter Button -->
+        <button id="btn-save-letter"
+          style="font-family: var(--font-ui); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.25em; padding: 10px 24px; background: transparent; color: var(--text-light); border: 1px solid currentColor; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; opacity: 0.7;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Simpan Surat Ini
+        </button>
+      </div>
+
+    </div>
+
+  </div><!-- /state-letter -->
+
+  <!-- Hidden audio element -->
+  <audio id="audio-player" preload="auto"></audio>
+
+  <!-- External Library for PNG Screenshot -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Standalone config (demo / premium mode) -->
+  <script src="config.js"></script>
+  <script src="i18n.js"></script>
+  <!-- Particles effect -->
+  <script src="particles.js"></script>
+  <!-- Main logic -->
+  <script src="script.js"></script>
+
+  <!-- ══════════════════════════════════════
+       SECRET MEMORY MODAL
+  ══════════════════════════════════════ -->
+  <div id="modal-secret-memory" aria-hidden="true" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(10, 8, 6, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition: background 0.7s ease, backdrop-filter 0.7s ease;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  ">
+    <!-- Close button -->
+    <button id="btn-close-memory" aria-label="Close memory" style="
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+  ">✕</button>
+
+    <!-- Counter Badge -->
+    <div id="polaroid-counter" style="
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.05em;
+    display: none;
+  "></div>
+
+    <!-- Carousel Row: Arrow + Polaroid + Arrow -->
+    <div style="display:flex; align-items:center; gap: 20px; position: relative;">
+
+      <!-- Left Arrow -->
+      <button id="btn-memory-prev" aria-label="Previous memory" style="
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.75);
+      font-size: 20px;
+      cursor: pointer;
+      display: none;
+      align-items: center; justify-content: center;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+      flex-shrink: 0;
+    ">‹</button>
+
+      <!-- Polaroid Frame -->
+      <div id="polaroid-frame" style="
+      position: relative;
+      background: #fdfaf5;
+      padding: 14px 14px 52px 14px;
+      border-radius: 3px;
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.08),
+        0 12px 40px rgba(0,0,0,0.28),
+        0 32px 80px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      max-width: 300px;
+      width: 100%;
+      transform: rotate(-2.5deg) translateY(40px) scale(0.88);
+      opacity: 0;
+      filter: blur(8px);
+      transition:
+        transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.9s ease,
+        filter 0.9s ease;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.75%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%220.025%22/%3E%3C/svg%3E');
+    ">
+        <!-- Media (photo or video) -->
+        <div id="polaroid-media-wrap" style="
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-radius: 1px;
+        background: #e8e0d8;
+        position: relative;
+      ">
+          <!-- JS will inject <img> or <video> here -->
+        </div>
+
+        <!-- Caption -->
+        <p id="polaroid-caption" style="
+        font-family: 'Caveat', cursive;
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #4a3f35;
+        text-align: center;
+        margin: 0;
+        padding-top: 10px;
+        line-height: 1.2;
+        letter-spacing: 0.01em;
+      "></p>
+      </div>
+
+      <!-- Right Arrow -->
+      <button id="btn-memory-next" aria-label="Next memory" style="
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.75);
+      font-size: 20px;
+      cursor: pointer;
+      display: none;
+      align-items: center; justify-content: center;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+      flex-shrink: 0;
+    ">›</button>
+
+    </div>
+  </div>
+
+</body>
+
+</html>
